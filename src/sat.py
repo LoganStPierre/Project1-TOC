@@ -55,12 +55,30 @@ class SatSolver(SatSolverAbstractClass):
         of the CSV file just focus on the logic
     """
 
-
     def sat_backtracking(self, n_vars:int, clauses:List[List[int]]) -> Tuple[bool, Dict[int, bool]]:
         pass
 
     def sat_bruteforce(self, n_vars:int, clauses:List[List[int]]) -> Tuple[bool, Dict[int, bool]]:
-        pass
+        for bits in itertools.product([False, True], repeat=n_vars):
+            assignment = {i+1: bits[i] for i in range(n_vars)}
+            ok = True
+            for clause in clauses:
+                clause_sat = False
+                for x in clause:
+                    if x == 0:
+                        continue
+                    var = abs(x)
+                    val = assignment.get(var, False)
+                    if (x>0 and val) or (x<0 and not val):
+                        clause_sat = True
+                        break
+                if not clause_sat:
+                    ok = False
+                    break
+            if ok:
+                return True, assignment
+        return False, {}
+
 
     def sat_bestcase(self, n_vars:int, clauses:List[List[int]]) -> Tuple[bool, Dict[int, bool]]:
         pass
